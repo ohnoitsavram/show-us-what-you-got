@@ -18,6 +18,8 @@ describe("github service", () => {
 
     const organisationId = "facebook";
 
+    const userId = "ohnoitsavram";
+
     const userData = [
         {
             userId: "one"
@@ -30,6 +32,15 @@ describe("github service", () => {
         }
     ];
 
+    const repositoryData = [
+        {
+            name: ".files"
+        },
+        {
+            name: "show-us-what-you-got"
+        }
+    ];
+
     beforeEach(() => {
         http = new Http();
         httpGetStub = sinon.stub(http, 'get');
@@ -37,6 +48,19 @@ describe("github service", () => {
 
     afterEach(() => {
         httpGetStub.restore();
+    });
+
+    it("should return repositories for user", (done) => {
+        //Arrange
+        httpGetStub.resolves(repositoryData);
+
+        gitHubService = new GitHubService(baseGitHubUrl, http, "");
+
+        // Act
+        let promise = gitHubService.getRepositoriesForUser(userId);
+
+        //Assert
+        promise.should.eventually.deep.equal(repositoryData).notify(done);
     });
 
     it("should return users for organisation", (done) => {
