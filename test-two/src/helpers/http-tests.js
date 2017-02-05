@@ -29,6 +29,8 @@ describe("http", () => {
         }
     ]);
 
+    const testResponse = { statusCode: 200, headers: {"content-type": "image/png"} };
+
     beforeEach(() => {
 
     });
@@ -39,7 +41,7 @@ describe("http", () => {
 
     it("should return list of objects without error", (done) => {
         //Arrange
-        requestGetStub = sinon.stub(request, 'get').yields(null, { statusCode: 200 }, testBody);
+        requestGetStub = sinon.stub(request, 'get').yields(null, testResponse, testBody);
 
         http = new Http(request);
 
@@ -47,7 +49,7 @@ describe("http", () => {
         var getPromise = http.get(testEndpoint);
 
         //Assert
-        getPromise.should.eventually.deep.equal(JSON.parse(testBody)).notify(done);
+        getPromise.should.eventually.deep.equal({headers: testResponse.headers, body: JSON.parse(testBody)}).notify(done);
     });
 
     it("should fail when http error occurs", (done) => {

@@ -14,9 +14,11 @@ class Http {
         };
 
         return new Promise((resolve, reject) => {
+            // Confusingly, a response is a node api http.IncomingMessage object, and not a node http.ServerResponse
+            // object.
             this.request.get(requestOptions, (error, response, body) => {
                 if (!error && response.statusCode == 200) {
-                    resolve(JSON.parse(body));
+                    resolve({headers: response.headers, body: JSON.parse(body)});
                 } else {
                     reject(JSON.stringify(response));
                 }
